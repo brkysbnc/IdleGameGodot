@@ -40,6 +40,7 @@ func _test_normalize() -> void:
 	_check(_near(s.mantissa, 5.0) and s.exponent == -2, "normalize 0.05")
 	var z = BN.from_float(0.0)
 	_check(z.mantissa == 0.0 and z.exponent == 0, "normalize 0")
+	_check(z.is_zero() and not BN.from_float(0.001).is_zero(), "is_zero")
 	var p = BN.from_parts(45.0, 2)
 	_check(_near(p.mantissa, 4.5) and p.exponent == 3, "from_parts normalize")
 	var neg = BN.from_float(-250.0)

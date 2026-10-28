@@ -122,6 +122,10 @@ func equals(other: BigNumber) -> bool:
 	return compare_to(other) == 0
 
 
+func is_zero() -> bool:
+	return mantissa == 0.0
+
+
 # --- Dönüşüm / gösterim ------------------------------------------------------
 
 ## Çok büyükse INF döner (exponent > 308).
