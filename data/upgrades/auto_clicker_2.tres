@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/upgrade_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"auto_clicker_2"
+display_name = "Otomatik Tıklayıcı II"
+description = "Saniyede 2 ek otomatik tık."
+type = "auto_click"
+cost = 6000.0
+value = 2.0

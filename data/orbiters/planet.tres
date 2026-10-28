@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="OrbiterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/orbiter_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"planet"
+display_name = "Gezegen"
+description = "Atmosferli, gelir üreten bir dünya."
+base_cost = 12000.0
+cost_growth = 1.15
+base_income = 47.0
