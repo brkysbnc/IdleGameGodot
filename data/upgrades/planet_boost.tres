@@ -9,5 +9,5 @@ display_name = "Yaşam Belirtisi"
 description = "Gezegen geliri iki kat."
 type = "orbiter"
 target_orbiter_id = &"planet"
-cost = 150000.0
+cost = 2000000.0
 value = 2.0

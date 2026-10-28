@@ -108,7 +108,7 @@ func _test_income_and_tick() -> void:
 func _test_upgrades() -> void:
 	_fresh()
 	_check(not Economy.try_buy_upgrade(&"click_power_1"), "parasiz upgrade alinamaz")
-	_give(100000.0)
+	_give(1000000000.0)
 	_check(Economy.try_buy_upgrade(&"click_power_1"), "click_power_1 alinir")
 	_check(UpgradeSystem.is_purchased(&"click_power_1"), "satin alinan isaretlenir")
 	_check(_upgrade_events.has(&"click_power_1"), "upgrade_purchased sinyali")

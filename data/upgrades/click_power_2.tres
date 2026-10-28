@@ -8,5 +8,5 @@ id = &"click_power_2"
 display_name = "Güçlü Dokunuş II"
 description = "Her tık yine iki kat kazandırır."
 type = "per_click"
-cost = 2500.0
+cost = 25000.0
 value = 2.0
