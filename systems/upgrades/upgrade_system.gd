@@ -11,6 +11,12 @@ extends Node
 ## - Satin alma/para kontrolu Economy'de. Burasi sadece durumu ve onbellegi tutar.
 ##   EventBus sinyallerini Economy atar, burasi atmaz.
 
+## Otomatik tik orani degisti (upgrade alindi ya da kayit yuklendi).
+## B'nin kendi ic sinyali, EventBus sozlesmesine dahil degil.
+signal auto_click_rate_changed(rate: float)
+
+const AutoClickerScript := preload("res://systems/upgrades/auto_clicker.gd")
+
 ## Upgrade tip anahtarlari (UpgradeData.type bu degerlerle eslesmeli).
 const TYPE_AUTO_CLICK := &"auto_click"
 const TYPE_PER_CLICK := &"per_click"
@@ -59,6 +65,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	load_definitions_from_dir(DEFINITIONS_DIR)
+	_create_auto_clicker()
 
 
 # ---------------------------------------------------------------- Sozlesme API
@@ -93,9 +100,11 @@ func apply_upgrade(id: StringName) -> void:
 	if definition == null:
 		push_warning("UpgradeSystem: bilinmeyen upgrade '%s'." % id)
 		return
+	var rate_before := _auto_click_rate
 	if not _fold(definition):
 		return
 	_purchased[id] = true
+	_emit_if_auto_click_rate_changed(rate_before)
 
 
 func is_purchased(id: StringName) -> bool:
@@ -112,8 +121,13 @@ func serialize() -> Dictionary:
 
 
 func deserialize(data: Dictionary) -> void:
+	var rate_before := _auto_click_rate
 	_reset()
-	var ids: Variant = data.get("purchased", [])
+	_apply_saved_ids(data.get("purchased", []))
+	_emit_if_auto_click_rate_changed(rate_before)
+
+
+func _apply_saved_ids(ids: Variant) -> void:
 	if not ids is Array:
 		push_warning("UpgradeSystem: kayitta 'purchased' dizi degil, yok sayildi.")
 		return
@@ -171,6 +185,23 @@ func _reset() -> void:
 	_auto_click_rate = 0.0
 	_orbiter_multipliers.clear()
 	_purchased.clear()
+
+
+func _emit_if_auto_click_rate_changed(rate_before: float) -> void:
+	if not is_equal_approx(rate_before, _auto_click_rate):
+		auto_click_rate_changed.emit(_auto_click_rate)
+
+
+## AutoClicker'i cocuk node olarak kurar. Economy'ye bagimlilik sadece burada.
+func _create_auto_clicker() -> void:
+	var economy := get_node_or_null("/root/Economy")
+	if economy == null:
+		push_warning("UpgradeSystem: Economy autoload'u bulunamadi, otomatik tik kapali.")
+		return
+	var clicker: Node = AutoClickerScript.new()
+	clicker.setup(get_auto_click_rate, economy.click)
+	add_child(clicker)
+	auto_click_rate_changed.connect(func(_rate: float) -> void: clicker.refresh())
 
 
 ## Tek bir upgrade'i onbellege isler. Basariliysa true.

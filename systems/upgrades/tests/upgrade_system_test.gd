@@ -34,6 +34,7 @@ func _init() -> void:
 	_test_enum_type_support()
 	_test_serialize_roundtrip()
 	_test_deserialize_skips_unknown_and_resets()
+	_test_auto_click_rate_signal()
 	print("UpgradeSystem testleri: %d kontrol, %d basarisiz" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -168,6 +169,23 @@ func _test_deserialize_skips_unknown_and_resets() -> void:
 	_eq(s.is_purchased(&"icerikten_silinmis"), false, "bilinmeyen kayitli id atlanir")
 	s.deserialize({})
 	_eq(s.get_global_multiplier(), 1.0, "bos kayit her seyi sifirlar")
+	s.free()
+
+
+func _test_auto_click_rate_signal() -> void:
+	var s := _make()
+	var emitted := []
+	s.auto_click_rate_changed.connect(func(rate: float) -> void: emitted.append(rate))
+	s.apply_upgrade(&"click_1") # auto click etkilemez
+	_eq(emitted.size(), 0, "auto click disi upgrade sinyal atmaz")
+	s.apply_upgrade(&"auto_1")
+	_eq(emitted, [1.0], "auto click upgrade'i sinyal atar")
+	s.apply_upgrade(&"auto_1") # tekrar: yok sayilir
+	_eq(emitted.size(), 1, "tekrar alim sinyal atmaz")
+	s.deserialize({"version": 1, "purchased": []})
+	_eq(emitted, [1.0, 0.0], "deserialize orani sifirlarsa sinyal atar")
+	s.deserialize({"version": 1, "purchased": []})
+	_eq(emitted.size(), 2, "oran ayniysa sinyal atmaz")
 	s.free()
 
 
