@@ -89,6 +89,8 @@ func _test_income_and_tick() -> void:
 	GameState.add_orbiter(&"dust_cloud", 10) # 10 x 0.1 = 1.0/sn
 	GameState.add_orbiter(&"asteroid", 2) # 2 x 1.0 = 2.0/sn
 	_check(_near(Economy.get_income_per_sec().to_float(), 3.0), "gelir toplami 3.0/sn")
+	_check(_near(Economy.get_orbiter_unit_income(&"asteroid").to_float(), 1.0), "orbiter basina gelir")
+	_check(Economy.get_orbiter_unit_income(&"yok_boyle_orbiter").is_zero(), "bilinmeyen orbiter geliri 0")
 	Economy.process_elapsed(0.5)
 	_check(_near(GameState.get_currency().to_float(), 1.5), "0.5 sn x 3.0 = 1.5")
 	GameState.deserialize({})
