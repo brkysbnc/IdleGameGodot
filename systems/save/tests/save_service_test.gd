@@ -49,6 +49,7 @@ func _init() -> void:
 	_test_invalid_provider_rejected()
 	_test_post_load_runs_after_all_sections()
 	_test_post_load_not_called_on_clean_start()
+	_test_offline_payout_triggers_save()
 	_cleanup()
 	print("SaveService testleri: %d kontrol, %d basarisiz" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -232,6 +233,36 @@ func _test_post_load_not_called_on_clean_start() -> void:
 	s.load_game()
 	_eq(order.size(), 0, "temiz baslangicta post_load cagrilmaz")
 	s.free()
+
+
+## Offline kazanc verilince SaveService hemen kaydeder (saved_at guncellensin, ayni sure iki kez odenmesin).
+func _test_offline_payout_triggers_save() -> void:
+	_cleanup()
+	var s: Node = SaveServiceScript.new()
+	s.save_path = TEST_PATH
+	s.register_section(&"game_state", Provider.new({"x": 1}))
+	s._register_offline_progress()
+	var offline: Node = s.get_child(0) # _register_offline_progress tek cocuk ekler
+	offline.setup(
+		func() -> float: return 100000.0,
+		func() -> FakeNumber: return FakeNumber.new(1.0),
+		func(_amount: Variant) -> void: pass
+	)
+	_eq(FileAccess.file_exists(TEST_PATH), false, "odemeden once kayit yok")
+	offline.grant(3600.0)
+	_eq(FileAccess.file_exists(TEST_PATH), true, "odemeden sonra otomatik kayit yapildi")
+	s.free()
+
+
+## Gelir icin sahte sayi (mantissa + mul_float).
+class FakeNumber extends RefCounted:
+	var mantissa: float = 0.0
+
+	func _init(p_value: float = 0.0) -> void:
+		mantissa = p_value
+
+	func mul_float(factor: float) -> FakeNumber:
+		return FakeNumber.new(mantissa * factor)
 
 
 ## deserialize ve post_load siralarini kaydeden provider.

@@ -18,6 +18,8 @@ extends Node
 ## JSON notu: sayilar JSON'dan float geri gelir (3 -> 3.0). Okuyan taraf (GameState vb.) int()'e cevirmelidir.
 ## BigNumber nesneleri kayit sirasinda to_dict() ile yazilir, okurken BigNumber.from_dict() ile geri kurulur.
 
+const OfflineProgressScript := preload("res://systems/save/offline_progress.gd")
+
 const SAVE_PATH := "user://save.json"
 const ECONOMY_PATH := "/root/Economy"
 const FORMAT_VERSION := 1
@@ -43,6 +45,7 @@ var _last_save_msec: int = -LIFECYCLE_SAVE_MIN_GAP_MSEC
 
 func _ready() -> void:
 	_register_default_sections()
+	_register_offline_progress()
 	load_game()
 	_autosave_timer = Timer.new()
 	_autosave_timer.wait_time = AUTOSAVE_INTERVAL
@@ -250,6 +253,20 @@ func _register_default_sections() -> void:
 			push_warning("SaveService: '%s' autoload'u bulunamadi, kayda dahil edilmedi." % DEFAULT_SECTIONS[key])
 			continue
 		register_section(key, provider)
+
+
+## B4: offline kazanc. EN SON kaydedilmeli: deserialize sirasinda saved_at okunur,
+## kazanc ise post_load'da (tum parcalar ve Economy.refresh'ten sonra) verilir.
+func _register_offline_progress() -> void:
+	var offline: Node = OfflineProgressScript.new()
+	add_child(offline)
+	register_section(&"offline", offline)
+	# Kazanc verilince hemen kaydet: saved_at guncellensin, ayni sure tekrar odenmesin.
+	offline.offline_earnings_granted.connect(_on_offline_earnings_granted)
+
+
+func _on_offline_earnings_granted(_earned: Variant, _away_seconds: float) -> void:
+	save_game()
 
 
 func _tmp_path() -> String:
