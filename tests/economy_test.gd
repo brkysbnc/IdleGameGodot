@@ -1,6 +1,6 @@
-extends SceneTree
+extends Node
 ## Economy testleri (A3). Autoload'lar gerekir (_initialize). Çalıştırma:
-##   godot --headless --path . --script res://tests/economy_test.gd
+##   godot --headless --path . res://tests/runner.tscn -- res://tests/economy_test.gd
 ## Upgrade testleri, gerçek UpgradeSystem (B1) yoksa (stub) atlanır.
 ## Çıkış kodu: 0 = tamam, 1 = hata.
 
@@ -9,11 +9,11 @@ var _income_events: Array = []
 var _upgrade_events: Array = []
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	for autoload in ["EventBus", "GameState", "Economy", "UpgradeSystem"]:
-		if not root.has_node(autoload):
+		if not get_tree().root.has_node(autoload):
 			printerr("HATA: '%s' autoload'u yok. Testi proje klasorunden --path . ile calistirin." % autoload)
-			quit(1)
+			get_tree().quit(1)
 			return
 	EventBus.income_changed.connect(func(per_sec: BigNumber) -> void: _income_events.append(per_sec))
 	EventBus.upgrade_purchased.connect(func(id: StringName) -> void: _upgrade_events.append(id))
@@ -29,7 +29,7 @@ func _initialize() -> void:
 		print("Economy testleri: TAMAM")
 	else:
 		printerr("Economy testleri: %d HATA" % _failed)
-	quit(1 if _failed > 0 else 0)
+	get_tree().quit(1 if _failed > 0 else 0)
 
 
 func _check(condition: bool, name: String) -> void:

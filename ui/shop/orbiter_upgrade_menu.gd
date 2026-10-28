@@ -8,6 +8,7 @@ var _list: ShopList
 
 func _ready() -> void:
 	visible = false
+	add_theme_stylebox_override("panel", ShopStyle.make_overlay_style())
 	var root := VBoxContainer.new()
 	add_child(root)
 
