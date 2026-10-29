@@ -1,6 +1,6 @@
 # Bozhan'ın assignment durumu — 29 Ekim 2026
 
-Çalışma dalı: `feature/b7-b10-gameplay`. Kullanıcı, tamamlanan çalışmaların ana dala birleştirilmesini onayladı; onaylanan entegrasyon hazırlanıyor. Bu belge uygulama ve doğrulama kaydıdır; nihai merge durumu GitHub üzerinden ayrıca doğrulanır.
+Çalışma dalı: `feature/b7-b10-gameplay`. Bu belge, 29 Ekim 2026'da kullanıcı tarafından onaylanan entegrasyonun uygulama ve doğrulama kaydıdır. Nihai dal ve PR durumu GitHub üzerinden izlenir.
 
 **Güncel platform kapsamı: yalnızca Windows (PC).** Kullanıcının 29 Ekim 2026 tarihli düzeltmesi, eski GitHub görevlerindeki Android + Windows hedefinin yerine geçer. Mobil yayın, Android export'u ve fiziksel telefon testleri tamamlanma koşulu değildir. Mevcut genel dokunmatik uyumluluğu kalabilir; mobil sürüm sözü verilmez. Son polish aşaması bu entegrasyondan sonra ele alınacak.
 
@@ -10,6 +10,8 @@ Başlangıç, Berkay'ın A zincirini içeren `fix/godot-verified-fixes` dalını
 
 - B1–B4: `feature/b4-offline-progress` / `2b55811`.
 - B5–B6: `feature/b5-orbit-motor` / `3e88f57`.
+
+İlk dosya aktarımının ardından özgün B1–B4 ve B5–B6 commit geçmişleri de birleştirme adayına alındı (`84fa515`, `648e464`). Bu geçmiş birleştirmeleri, test edilen oyun dosyalarının içeriğini değiştirmedi.
 
 B3'ün yeni testlerinde `OrderedProvider`, yalnızca `Provider` kabul eden yardımcıya verildiği için derleme hatası vardı. Yardımcı, gerçek kayıt arayüzünün kabul ettiği `Object` tipine düzeltildi. Test çalıştırıcısı da derlenemeyen bir script için açık hata koduyla çıkar; süresiz açık kalmaz.
 
@@ -68,7 +70,7 @@ python game/tests/verify.py --engine "GODOT_EXE_YOLU" --visual --gameplay-only
 
 Araç, projenin yanında `.verification/project` içinde ayrı bir kopya oluşturur. Windows'ta `APPDATA` ve `LOCALAPPDATA` yalnızca test alt süreçleri için bu klasörün içine yönlendirilir. Gerçek oyuncu kaydı okunmaz veya üzerine yazılmaz. Test kopyası Git çalışma alanından ayrıdır.
 
-İlk tam çalıştırmada içe aktarma dahil **15/15 test grubu geçti**. Daha sonra gerçek grafik penceresiyle genişletilmiş oyun akışı **59 kontrol, 0 hata** verdi. Mevcut kayıt testindeki beklenen bozuk veri reddetme mesajları, test aracında açıkça tanımlı istisnalardır; beklenmedik derleme, çalışma veya çizim hataları testi başarısız sayar.
+Birleştirme öncesi Windows doğrulamasında, içe aktarma ve gerçek grafik penceresi dahil **17/17 test grubu geçti**. Kamera testi **100 kontrol**, ana oyun akışı **76 kontrol**, sıfır hata verdi. Mevcut kayıt testindeki beklenen bozuk veri reddetme mesajları, test aracında açıkça tanımlı istisnalardır; beklenmedik derleme, çalışma veya çizim hataları testi başarısız sayar.
 
 Ekran görüntüleri: `.verification/project/screenshots/`. Ayrı `desktop-profile.json`, 500 nesnenin çizildiği 120 karelik ölçümü, ekran kartını ve ortalama FPS'yi kaydeder. Windows / OpenGL Compatibility / RTX 3060 üzerinde yaklaşık **60 FPS** ölçüldü.
 
