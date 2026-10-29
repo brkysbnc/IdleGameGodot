@@ -16,11 +16,13 @@ config/quit_on_go_back=false
 run/max_fps=60
 
 [autoload]
+; SIRA ONEMLI: autoload'lar yukleme sirasina gore baslar.
+; Economy, UpgradeSystem'den ONCE olmali (UpgradeSystem._ready Economy'yi bulur).
 
 EventBus="*res://common/event_bus.gd"
 GameState="*res://core/game_state.gd"
-UpgradeSystem="*res://systems/upgrades/upgrade_system.gd"
 Economy="*res://core/economy.gd"
+UpgradeSystem="*res://systems/upgrades/upgrade_system.gd"
 SaveService="*res://systems/save/save_service.gd"
 
 [display]

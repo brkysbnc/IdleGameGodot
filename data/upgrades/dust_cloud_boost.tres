@@ -9,5 +9,5 @@ display_name = "Yoğun Toz"
 description = "Toz Bulutu geliri iki kat."
 type = "orbiter"
 target_orbiter_id = &"dust_cloud"
-cost = 200.0
+cost = 400.0
 value = 2.0

@@ -9,5 +9,5 @@ display_name = "Zengin Damar"
 description = "Asteroit geliri iki kat."
 type = "orbiter"
 target_orbiter_id = &"asteroid"
-cost = 1500.0
+cost = 3000.0
 value = 2.0

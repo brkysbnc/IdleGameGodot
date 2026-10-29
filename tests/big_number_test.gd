@@ -57,6 +57,14 @@ func _test_add_sub() -> void:
 	_check(_near(BN.from_float(5.0).sub(BN.from_float(3.0)).to_float(), 2.0), "sub 5-3")
 	_check(_near(BN.from_float(3.0).sub(BN.from_float(5.0)).to_float(), -2.0), "sub 3-5 negatif")
 	_check(BN.from_float(4.0).sub(BN.from_float(4.0)).compare_to(BN.zero()) == 0, "sub esit -> 0")
+	# Kayan nokta kalintisi: 100-40 tam 60 olmali, 60-60 tam sifir olmali (negatif toz kalmamali).
+	_check(BN.from_float(100.0).sub(BN.from_float(40.0)).equals(BN.from_float(60.0)), "sub 100-40 == 60")
+	_check(BN.from_float(100.0).sub(BN.from_float(40.0)).sub(BN.from_float(60.0)).is_zero(), "sub 60-60 tam sifir")
+	_check(BN.from_parts(1.0, 30).sub(BN.from_parts(4.0, 29)).sub(BN.from_parts(6.0, 29)).is_zero(), "sub buyuk sayida tam sifir")
+	var tenth := BN.zero()
+	for i in 10:
+		tenth = tenth.add(BN.from_float(0.1))
+	_check(tenth.equals(BN.from_float(1.0)), "0.1 x10 == 1")
 
 
 func _test_mul() -> void:
@@ -85,6 +93,9 @@ func _test_compare() -> void:
 	_check(a.equals(BN.from_float(100.0)) and a.gte(BN.from_float(100.0)), "compare esit")
 	_check(BN.from_parts(1.0, 50).gt(BN.from_parts(9.0, 49)), "compare farkli ussu")
 	_check(BN.zero().lt(a) and a.gt(BN.zero()), "compare sifir")
+	_check(BN.from_float(1.000001).gt(BN.from_float(1.0)), "compare gercekten farkli sayilar esit sayilmaz")
+	_check(BN.from_parts(9.999999999999998, 5).equals(BN.from_parts(1.0, 6)), "compare us siniri esit")
+	_check(BN.from_parts(9.9, 5).lt(BN.from_parts(1.0, 6)), "compare us siniri farkli")
 	_check(BN.from_float(-5.0).lt(BN.from_float(-3.0)), "compare negatif ayni us")
 	_check(BN.from_float(-500.0).lt(BN.from_float(-5.0)), "compare negatif farkli us")
 	_check(BN.from_float(-1.0).lt(BN.zero()) and BN.zero().gt(BN.from_float(-1.0)), "compare negatif-sifir")
