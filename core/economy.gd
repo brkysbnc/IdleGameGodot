@@ -61,6 +61,20 @@ func get_income_per_sec() -> BigNumber:
 	return _income_per_sec
 
 
+## Tek bir orbiter adedinin saniyelik geliri (tüm çarpanlar dahil). Hem toplam gelir hem
+## mağaza paneli bunu kullanır (DRY).
+func get_orbiter_unit_income(id: StringName) -> BigNumber:
+	var data := GameData.get_orbiter(id)
+	if data == null:
+		return BigNumber.zero()
+	return BigNumber.from_float(
+		data.base_income
+		* UpgradeSystem.get_orbiter_multiplier(id)
+		* UpgradeSystem.get_orbiters_multiplier()
+		* UpgradeSystem.get_global_multiplier()
+	)
+
+
 ## Dış durum (kayıt yükleme) Economy'nin haberi olmadan değiştiyse çağrılır:
 ## önbelleği düşürür ve income_changed sinyali atar. SaveService yüklemeden sonra çağırmalı.
 func refresh() -> void:
@@ -127,9 +141,8 @@ func _compute_income() -> BigNumber:
 		var count := GameState.get_orbiter_count(orbiter.id)
 		if count == 0:
 			continue
-		var income := orbiter.base_income * count * UpgradeSystem.get_orbiter_multiplier(orbiter.id)
-		total = total.add(BigNumber.from_float(income))
-	return total.mul_float(UpgradeSystem.get_orbiters_multiplier() * UpgradeSystem.get_global_multiplier())
+		total = total.add(get_orbiter_unit_income(orbiter.id).mul_float(count))
+	return total
 
 
 func _on_orbiter_count_changed(_id: StringName, _count: int) -> void:

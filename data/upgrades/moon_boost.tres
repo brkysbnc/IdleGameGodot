@@ -9,5 +9,5 @@ display_name = "Gelgit Enerjisi"
 description = "Ay geliri iki kat."
 type = "orbiter"
 target_orbiter_id = &"moon"
-cost = 15000.0
+cost = 75000.0
 value = 2.0

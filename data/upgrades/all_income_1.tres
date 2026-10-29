@@ -8,5 +8,5 @@ id = &"all_income_1"
 display_name = "Yıldız Parlaması"
 description = "Tüm gelir 1,5 kat artar."
 type = "all_income"
-cost = 15000.0
+cost = 750000.0
 value = 1.5

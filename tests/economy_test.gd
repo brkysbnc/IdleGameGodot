@@ -1,6 +1,6 @@
-extends SceneTree
+extends Node
 ## Economy testleri (A3). Autoload'lar gerekir (_initialize). Çalıştırma:
-##   godot --headless --path . --script res://tests/economy_test.gd
+##   godot --headless --path . res://tests/runner.tscn -- res://tests/economy_test.gd
 ## Upgrade testleri, gerçek UpgradeSystem (B1) yoksa (stub) atlanır.
 ## Çıkış kodu: 0 = tamam, 1 = hata.
 
@@ -9,11 +9,11 @@ var _income_events: Array = []
 var _upgrade_events: Array = []
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	for autoload in ["EventBus", "GameState", "Economy", "UpgradeSystem"]:
-		if not root.has_node(autoload):
+		if not get_tree().root.has_node(autoload):
 			printerr("HATA: '%s' autoload'u yok. Testi proje klasorunden --path . ile calistirin." % autoload)
-			quit(1)
+			get_tree().quit(1)
 			return
 	EventBus.income_changed.connect(func(per_sec: BigNumber) -> void: _income_events.append(per_sec))
 	EventBus.upgrade_purchased.connect(func(id: StringName) -> void: _upgrade_events.append(id))
@@ -29,7 +29,7 @@ func _initialize() -> void:
 		print("Economy testleri: TAMAM")
 	else:
 		printerr("Economy testleri: %d HATA" % _failed)
-	quit(1 if _failed > 0 else 0)
+	get_tree().quit(1 if _failed > 0 else 0)
 
 
 func _check(condition: bool, name: String) -> void:
@@ -89,6 +89,8 @@ func _test_income_and_tick() -> void:
 	GameState.add_orbiter(&"dust_cloud", 10) # 10 x 0.1 = 1.0/sn
 	GameState.add_orbiter(&"asteroid", 2) # 2 x 1.0 = 2.0/sn
 	_check(_near(Economy.get_income_per_sec().to_float(), 3.0), "gelir toplami 3.0/sn")
+	_check(_near(Economy.get_orbiter_unit_income(&"asteroid").to_float(), 1.0), "orbiter basina gelir")
+	_check(Economy.get_orbiter_unit_income(&"yok_boyle_orbiter").is_zero(), "bilinmeyen orbiter geliri 0")
 	Economy.process_elapsed(0.5)
 	_check(_near(GameState.get_currency().to_float(), 1.5), "0.5 sn x 3.0 = 1.5")
 	GameState.deserialize({})
@@ -106,7 +108,7 @@ func _test_income_and_tick() -> void:
 func _test_upgrades() -> void:
 	_fresh()
 	_check(not Economy.try_buy_upgrade(&"click_power_1"), "parasiz upgrade alinamaz")
-	_give(100000.0)
+	_give(1000000000.0)
 	_check(Economy.try_buy_upgrade(&"click_power_1"), "click_power_1 alinir")
 	_check(UpgradeSystem.is_purchased(&"click_power_1"), "satin alinan isaretlenir")
 	_check(_upgrade_events.has(&"click_power_1"), "upgrade_purchased sinyali")
