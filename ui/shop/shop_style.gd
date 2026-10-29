@@ -12,6 +12,18 @@ const ROW_SPACING := 8
 const SCROLL_DEADZONE := 16
 ## Para değişimine bağlı yenilemeler en fazla bu aralıkla yapılır (~10 Hz).
 const REFRESH_INTERVAL := 0.1
+## Bindirme menüsünün iç boşluğu.
+const OVERLAY_MARGIN := 16
+
+
+## Üstüne bindirilen menüler için opak arka plan (varsayılan panel stili yarı saydamdır,
+## altındaki panelin yazıları görünür).
+static func make_overlay_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.09, 0.10, 0.16, 1.0)
+	style.set_content_margin_all(OVERLAY_MARGIN)
+	style.set_corner_radius_all(8)
+	return style
 
 
 static func make_label(font_size: int = FONT_SIZE) -> Label:

@@ -1,18 +1,18 @@
-extends SceneTree
+extends Node
 ## Mağaza paneli duman testi (A5/A6): sahne yüklenir, satırlar veriden oluşur, buton
 ## Economy'ye bağlıdır, orbiter menüsü sahip olunan orbiter'ın upgrade'ini listeler.
 ## Çalıştırma (autoload'lar gerekir):
-##   godot --headless --path . --script res://tests/shop_panel_test.gd
+##   godot --headless --path . res://tests/runner.tscn -- res://tests/shop_panel_test.gd
 ## Çıkış kodu: 0 = tamam, 1 = hata.
 
 var _failed: int = 0
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	for autoload in ["EventBus", "GameState", "Economy", "UpgradeSystem"]:
-		if not root.has_node(autoload):
+		if not get_tree().root.has_node(autoload):
 			printerr("HATA: '%s' autoload'u yok. Testi proje klasorunden --path . ile calistirin." % autoload)
-			quit(1)
+			get_tree().quit(1)
 			return
 	UpgradeSystem.deserialize({})
 	GameState.deserialize({})
@@ -21,10 +21,10 @@ func _initialize() -> void:
 	var scene: PackedScene = load("res://ui/shop/shop_panel.tscn")
 	_check(scene != null, "shop_panel.tscn yuklenir")
 	if scene == null:
-		quit(1)
+		get_tree().quit(1)
 		return
 	var panel: ShopPanel = scene.instantiate()
-	root.add_child(panel)
+	add_child(panel)
 
 	var orbiter_rows: Array = _collect(panel, OrbiterRow)
 	_check(orbiter_rows.size() == GameData.orbiters().size(), "her orbiter icin bir satir")
@@ -55,7 +55,7 @@ func _initialize() -> void:
 		print("ShopPanel testleri: TAMAM")
 	else:
 		printerr("ShopPanel testleri: %d HATA" % _failed)
-	quit(1 if _failed > 0 else 0)
+	get_tree().quit(1 if _failed > 0 else 0)
 
 
 func _check(condition: bool, name: String) -> void:

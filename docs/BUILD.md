@@ -10,17 +10,23 @@ Hedef platformlar: **Windows (PC)** ve **Android (mobil)**. Godot **4.7.2**, GL 
 
 ## 2. Testler (komut satırı)
 
-Proje bir kez editörde açılmış ya da `godot --headless --path . --import` ile içe aktarılmış olmalı (sınıf adları ve autoload'lar için).
+Proje bir kez editörde açılmış ya da `godot --headless --path . --import` ile içe aktarılmış olmalı (sınıf adları ve autoload'lar için). Çıkış kodu 0 = tamam.
 
+**Autoload gerektirmeyenler** (`--script` ile):
 ```
 godot --headless --path . --script res://tests/big_number_test.gd
 godot --headless --path . --script res://tests/game_data_test.gd
-godot --headless --path . --script res://tests/game_state_test.gd
-godot --headless --path . --script res://tests/economy_test.gd
-godot --headless --path . --script res://tests/shop_panel_test.gd
 ```
 
-Çıkış kodu 0 = tamam. Bozhan'ın testleri `systems/upgrades/tests/` altında. Dengeyi kontrol etmek için: `python3 tools/balance_sim.py`.
+**Autoload gerektirenler** (runner sahnesiyle, `--script` modunda autoload isimleri derleme anında bilinmez):
+```
+godot --headless --path . res://tests/runner.tscn -- res://tests/game_state_test.gd
+godot --headless --path . res://tests/runner.tscn -- res://tests/economy_test.gd
+godot --headless --path . res://tests/runner.tscn -- res://tests/shop_panel_test.gd
+godot --headless --path . res://tests/runner.tscn -- res://tests/save_integration_test.gd
+```
+
+`save_integration_test` gerçek `SaveService` (B3) ve `UpgradeSystem` (B1) olmadan "ATLANDI" yazıp 0 ile çıkar. Bozhan'ın testleri `systems/upgrades/tests/` ve `systems/save/tests/` altında (`--script` ile). Dengeyi kontrol etmek için: `python3 tools/balance_sim.py`.
 
 ## 3. Export şablonları (bir kez)
 

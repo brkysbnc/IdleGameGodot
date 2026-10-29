@@ -1,6 +1,6 @@
-extends SceneTree
-## GameState testleri (A2). Autoload'lar gerekir, bu yüzden _initialize kullanılır. Çalıştırma:
-##   godot --headless --path . --script res://tests/game_state_test.gd
+extends Node
+## GameState testleri (A2). Autoload'lar gerekir, bu yüzden runner sahnesiyle çalışır. Çalıştırma:
+##   godot --headless --path . res://tests/runner.tscn -- res://tests/game_state_test.gd
 ## Çıkış kodu: 0 = tamam, 1 = hata.
 
 var _failed: int = 0
@@ -8,10 +8,10 @@ var _currency_events: Array = []
 var _orbiter_events: Array = []
 
 
-func _initialize() -> void:
-	if not root.has_node("GameState") or not root.has_node("EventBus"):
+func _ready() -> void:
+	if not get_tree().root.has_node("GameState") or not get_tree().root.has_node("EventBus"):
 		printerr("HATA: autoload'lar yok. Testi proje klasorunden --path . ile calistirin.")
-		quit(1)
+		get_tree().quit(1)
 		return
 	EventBus.currency_changed.connect(func(amount: BigNumber) -> void: _currency_events.append(amount))
 	EventBus.orbiter_count_changed.connect(func(id: StringName, count: int) -> void: _orbiter_events.append([id, count]))
@@ -23,7 +23,7 @@ func _initialize() -> void:
 		print("GameState testleri: TAMAM")
 	else:
 		printerr("GameState testleri: %d HATA" % _failed)
-	quit(1 if _failed > 0 else 0)
+	get_tree().quit(1 if _failed > 0 else 0)
 
 
 func _check(condition: bool, name: String) -> void:
