@@ -1,0 +1,15 @@
+# Normalize line endings (Windows/macOS karisimi icin)
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.hdr binary
+*.exr binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
+*.glb binary
+*.fbx binary

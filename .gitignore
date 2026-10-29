@@ -1,0 +1,30 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Godot-specific export artifacts
+*.translation
+export_credentials.cfg
+export_presets.cfg.bak
+
+# Mono
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+
+# Build ciktilari
+build/
+*.apk
+*.aab
+*.keystore
