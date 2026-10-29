@@ -6,9 +6,9 @@
 script = ExtResource("1_script")
 orbiter_id = &"asteroid"
 orbit_radius = 10.0
-orbit_spread = 2.5
+orbit_spread = 0.0
 angular_speed = 0.20
-size = 0.18
-inclination_deg = -3.0
+size = 0.85
+inclination_deg = 0.0
 color = Color(0.55, 0.52, 0.48, 1)
 max_instances = 100

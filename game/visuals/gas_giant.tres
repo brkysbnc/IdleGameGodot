@@ -6,9 +6,9 @@
 script = ExtResource("1_script")
 orbiter_id = &"gas_giant"
 orbit_radius = 25.0
-orbit_spread = 4.0
+orbit_spread = 0.0
 angular_speed = 0.05
-size = 1.40
-inclination_deg = 4.0
+size = 3.0
+inclination_deg = 0.0
 color = Color(0.92, 0.62, 0.30, 1)
 max_instances = 100
