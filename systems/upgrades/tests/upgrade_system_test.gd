@@ -173,7 +173,7 @@ func _test_deserialize_skips_unknown_and_resets() -> void:
 
 func _eq(actual: Variant, expected: Variant, label: String) -> void:
 	_checks += 1
-	var same := is_equal_approx(actual, expected) if actual is float and expected is float else actual == expected
+	var same: bool = is_equal_approx(actual, expected) if actual is float and expected is float else actual == expected
 	if not same:
 		_failures += 1
 		printerr("BASARISIZ: %s (beklenen: %s, gelen: %s)" % [label, expected, actual])
