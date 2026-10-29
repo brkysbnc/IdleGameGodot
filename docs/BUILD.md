@@ -43,16 +43,20 @@ Bu doğrudan komutlar yalıtılmış test kopyası oluşturmaz; normal geliştir
 
 ## 3. Windows release export'u
 
-**Durum:** Editörde çalıştırma ve Windows testleri doğrulandı. Windows release export'u henüz doğrulanmadı ve `export_presets.cfg` henüz mevcut değil. Aşağıdaki adımlar tamamlanmadan dağıtılabilir `.exe` hazır sayılmaz.
+**Durum:** `export_presets.cfg` repoda ("Windows Desktop" preset'i). Release export 0 uyarıyla alındı (~111 MB, tek `.exe`, PCK gömülü, `tests/`, `tools/`, `docs/` pakete girmez). Release derlemede F1 ve gizli köşe dokunuşları geliştirici panelini açmaz; debug derlemede açılır (Linux eşdeğer derlemeyle doğrulandı). Gerçek Windows makinede çalıştırma ayrıca elle denenmelidir.
 
 1. **Editor > Manage Export Templates > Download and Install** ile editörle aynı sürümdeki **4.7.2** export şablonlarını kur.
-2. **Project > Export > Add... > Windows Desktop** seç.
-3. Export Path: `build/windows/IdleGameGodot.exe`. `build/` çıktıları kaynak kontrolüne eklenmez.
-4. İsteğe bağlı **Embed PCK**, verileri tek `.exe` içinde paketler.
-5. Release için **Export With Debug** seçeneğini kapatıp **Export Project** çalıştır.
-6. Çıkan `.exe` ile kayıt/yükleme, satın alma ve kamera kontrollerini dene. F1 ve gizli köşe girişinin geliştirici paneli açmadığını doğrula.
+2. Komut satırından (proje kökünde, `build/` klasörü yoksa oluştur):
 
-Godot'un ürettiği `export_presets.cfg` takımın ortak Windows ayarları için kaynak kontrolüne eklenir. Kimlik bilgileri `export_credentials.cfg` içinde tutulur ve kaynak kontrolüne eklenmez.
+```text
+godot --headless --path . --export-release "Windows Desktop" build/windows/IdleGameGodot.exe
+```
+
+   Editörde: **Project > Export > Windows Desktop > Export Project** (**Export With Debug** kapalı). Debug araçlı deneme derlemesi için `--export-debug` kullan.
+3. `build/` çıktıları kaynak kontrolüne eklenmez. `.exe` imzasızdır; Windows SmartScreen uyarısı normaldir ("Yine de çalıştır").
+4. Çıkan `.exe` ile kayıt/yükleme, satın alma ve kamera kontrollerini dene.
+
+Kimlik bilgileri `export_credentials.cfg` içinde tutulur ve kaynak kontrolüne eklenmez.
 
 ## 4. Birleştirme ve dağıtım kontrolleri
 
