@@ -8,5 +8,5 @@ id = &"all_orbiters_1"
 display_name = "Yörünge Uyumu"
 description = "Tüm orbiter gelirleri iki katına çıkar."
 type = "all_orbiters"
-cost = 40000.0
+cost = 5000000.0
 value = 2.0
