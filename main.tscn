@@ -1,0 +1,146 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://ui/hud/safe_area.gd" id="2_safe"]
+[ext_resource type="Script" path="res://ui/hud/hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://game/star_system.tscn" id="4_world"]
+[ext_resource type="PackedScene" path="res://ui/shop/shop_panel.tscn" id="5_shop"]
+[ext_resource type="Script" path="res://ui/hud/click_effects.gd" id="6_fx"]
+[ext_resource type="Script" path="res://game/sound_feedback.gd" id="7_audio"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.031, 0.055, 0.114, 1)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_safe")
+
+[node name="Layout" type="HBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Stage" type="VBoxContainer" parent="SafeArea/Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 18
+
+[node name="Header" type="HBoxContainer" parent="SafeArea/Layout/Stage"]
+layout_mode = 2
+
+[node name="Brand" type="Label" parent="SafeArea/Layout/Stage/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.83, 0.57, 1)
+theme_override_font_sizes/font_size = 36
+text = "O R B I T  /  Yıldız günlüğü"
+
+[node name="OrbiterCount" type="Label" parent="SafeArea/Layout/Stage/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.66, 0.77, 1)
+theme_override_font_sizes/font_size = 28
+text = "0 gök cismi"
+
+[node name="HUD" type="PanelContainer" parent="SafeArea/Layout/Stage"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("3_hud")
+
+[node name="Observatory" type="Control" parent="SafeArea/Layout/Stage"]
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="SafeArea/Layout/Stage/Observatory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SpaceViewport" type="SubViewport" parent="SafeArea/Layout/Stage/Observatory/ViewportContainer"]
+unique_name_in_owner = true
+own_world_3d = true
+size = Vector2i(1200, 720)
+physics_object_picking = true
+render_target_update_mode = 4
+
+[node name="StarSystem" parent="SafeArea/Layout/Stage/Observatory/ViewportContainer/SpaceViewport" instance=ExtResource("4_world")]
+unique_name_in_owner = true
+
+[node name="ClickEffects" type="Control" parent="SafeArea/Layout/Stage/Observatory"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_fx")
+
+[node name="CenterView" type="Button" parent="SafeArea/Layout/Stage/Observatory"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 196.0
+offset_bottom = 112.0
+theme_override_font_sizes/font_size = 28
+text = "Ortala"
+
+[node name="Footer" type="HBoxContainer" parent="SafeArea/Layout/Stage"]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="SafeArea/Layout/Stage/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.58, 0.66, 0.77, 1)
+theme_override_font_sizes/font_size = 28
+text = "Yıldıza dokun • Sağ/orta tuşla sürükle • Tekerlekle yaklaş"
+autowrap_mode = 3
+
+[node name="MuteButton" type="Button" parent="SafeArea/Layout/Stage/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 96)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Ses: açık"
+
+[node name="ShopPanel" parent="SafeArea/Layout" instance=ExtResource("5_shop")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="DebugCorner" type="Button" parent="SafeArea/Layout/Stage/Header/Brand"]
+unique_name_in_owner = true
+offset_right = 96.0
+offset_bottom = 96.0
+modulate = Color(1, 1, 1, 0)
+focus_mode = 0
+
+[node name="SoundFeedback" type="Node" parent="."]
+script = ExtResource("7_audio")

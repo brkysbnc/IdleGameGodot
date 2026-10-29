@@ -1,0 +1,55 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://game/star_system.gd" id="1_world"]
+[ext_resource type="Script" path="res://game/star.gd" id="2_star"]
+[ext_resource type="Script" path="res://game/orbit_manager.gd" id="3_orbit"]
+[ext_resource type="Script" path="res://game/orbit_rings.gd" id="4_rings"]
+[ext_resource type="Texture2D" path="res://assets/galaxy.png" id="5_sky"]
+[ext_resource type="Script" path="res://game/orbit_camera.gd" id="6_camera"]
+
+[sub_resource type="PanoramaSkyMaterial" id="Panorama"]
+panorama = ExtResource("5_sky")
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Panorama")
+radiance_size = 0
+
+[sub_resource type="Environment" id="Space"]
+background_mode = 2
+background_energy_multiplier = 0.65
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.65, 0.75, 1, 1)
+ambient_light_energy = 0.7
+reflected_light_source = 2
+tonemap_mode = 0
+
+[node name="StarSystem" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Space")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+script = ExtResource("6_camera")
+position = Vector3(0, 48, 55)
+current = true
+projection = 0
+fov = 50.0
+near = 0.1
+far = 180.0
+
+[node name="Sunlight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -25, 0)
+light_color = Color(1, 0.85, 0.65, 1)
+light_energy = 1.4
+shadow_enabled = false
+
+[node name="Star" type="Node3D" parent="."]
+script = ExtResource("2_star")
+
+[node name="OrbitGuides" type="MeshInstance3D" parent="."]
+script = ExtResource("4_rings")
+
+[node name="OrbitManager" type="Node3D" parent="."]
+script = ExtResource("3_orbit")
