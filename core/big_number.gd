@@ -10,6 +10,9 @@ extends RefCounted
 const _LN10: float = 2.302585092994046
 ## İki sayının üs farkı bundan büyükse küçük olan toplamda etkisizdir (double ~15-16 hane).
 const _PRECISION_GAP: int = 15
+## Kayan nokta hatası payı (göreli). Çıkarmada oluşan 1e-15 kalıntısı sıfır sayılır,
+## karşılaştırmada bu kadar yakın sayılar eşit sayılır (100 - 40 == 60 olsun).
+const _EPSILON: float = 1e-12
 const _SUFFIXES: Array[String] = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
 
 var mantissa: float = 0.0
@@ -48,8 +51,8 @@ func add(other: BigNumber) -> BigNumber:
 	if d <= -_PRECISION_GAP:
 		return other
 	if d >= 0:
-		return from_parts(mantissa + other.mantissa * pow(10.0, -d), exponent)
-	return from_parts(mantissa * pow(10.0, d) + other.mantissa, other.exponent)
+		return _combine(mantissa, other.mantissa * pow(10.0, -d), exponent)
+	return _combine(mantissa * pow(10.0, d), other.mantissa, other.exponent)
 
 
 func sub(other: BigNumber) -> BigNumber:
@@ -95,9 +98,16 @@ func compare_to(other: BigNumber) -> int:
 	if sa == 0.0:
 		return 0
 	if exponent != other.exponent:
+		# Üs farkı 1 iken 9.99999999999 ile 1.0 (bir üst üs) aynı sayı olabilir.
+		if absi(exponent - other.exponent) == 1:
+			var self_higher: bool = exponent > other.exponent
+			var high: float = mantissa if self_higher else other.mantissa
+			var low: float = other.mantissa if self_higher else mantissa
+			if absf(high * 10.0 - low) <= _EPSILON * absf(low):
+				return 0
 		var c: int = 1 if exponent > other.exponent else -1
 		return c if sa > 0.0 else -c
-	if mantissa == other.mantissa:
+	if absf(mantissa - other.mantissa) <= _EPSILON * maxf(absf(mantissa), absf(other.mantissa)):
 		return 0
 	return 1 if mantissa > other.mantissa else -1
 
@@ -120,6 +130,10 @@ func lte(other: BigNumber) -> bool:
 
 func equals(other: BigNumber) -> bool:
 	return compare_to(other) == 0
+
+
+func is_zero() -> bool:
+	return mantissa == 0.0
 
 
 # --- Dönüşüm / gösterim ------------------------------------------------------
@@ -164,6 +178,15 @@ static func from_dict(data: Dictionary) -> BigNumber:
 
 
 # --- İç ----------------------------------------------------------------------
+
+## Aynı üste getirilmiş iki mantissa'yı toplar. Sonuç, operandlara göre kayan nokta kalıntısı
+## düzeyindeyse (iki yakın sayının farkı) tam sıfır döner.
+static func _combine(m_a: float, m_b: float, e: int) -> BigNumber:
+	var total: float = m_a + m_b
+	if absf(total) <= _EPSILON * maxf(absf(m_a), absf(m_b)):
+		return BigNumber.zero()
+	return from_parts(total, e)
+
 
 func _normalize() -> void:
 	if mantissa == 0.0:
