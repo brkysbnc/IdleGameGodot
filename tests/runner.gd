@@ -12,7 +12,7 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	var script: Script = load(args[0])
-	if script == null:
+	if script == null or not script.can_instantiate():
 		printerr("HATA: '%s' yuklenemedi." % args[0])
 		get_tree().quit(1)
 		return
