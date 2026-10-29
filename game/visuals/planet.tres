@@ -11,4 +11,4 @@ angular_speed = 0.08
 size = 0.70
 inclination_deg = -2.0
 color = Color(0.20, 0.50, 0.90, 1)
-max_instances = 500
+max_instances = 100

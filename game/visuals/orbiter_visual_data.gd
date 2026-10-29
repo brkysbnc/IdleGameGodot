@@ -27,8 +27,8 @@ extends Resource
 ## Istege bagli albedo dokusu.
 @export var texture: Texture2D
 ## Bu turden ekranda en fazla kac orbiter cizilir. Sayi bunu asarsa gelir yine sayilir, sadece gorsel sinirlanir
-## (mobil performans hedefi: tur basina 500).
-@export_range(1, 2000) var max_instances: int = 500
+## (mobil hedefi: TOPLAM ~500 cizili orbiter, bu yuzden 5 tur icin varsayilan 100; cihazda olcup ayarla).
+@export_range(1, 2000) var max_instances: int = 100
 
 
 ## Yorungenin ulasabildigi en uzak mesafe (kamera/AABB hesabi icin).
