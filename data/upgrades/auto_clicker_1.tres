@@ -8,5 +8,5 @@ id = &"auto_clicker_1"
 display_name = "Otomatik Tıklayıcı I"
 description = "Saniyede 1 otomatik tık."
 type = "auto_click"
-cost = 500.0
+cost = 2000.0
 value = 1.0
