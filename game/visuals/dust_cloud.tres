@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="OrbiterVisualData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/visuals/orbiter_visual_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+orbiter_id = &"dust_cloud"
+orbit_radius = 7.0
+orbit_spread = 2.5
+angular_speed = 0.30
+size = 0.10
+inclination_deg = 2.0
+color = Color(0.62, 0.55, 0.47, 1)
+max_instances = 500

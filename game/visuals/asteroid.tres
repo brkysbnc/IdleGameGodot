@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="OrbiterVisualData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/visuals/orbiter_visual_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+orbiter_id = &"asteroid"
+orbit_radius = 10.0
+orbit_spread = 2.5
+angular_speed = 0.20
+size = 0.18
+inclination_deg = -3.0
+color = Color(0.55, 0.52, 0.48, 1)
+max_instances = 500

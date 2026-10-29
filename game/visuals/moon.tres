@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="OrbiterVisualData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/visuals/orbiter_visual_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+orbiter_id = &"moon"
+orbit_radius = 13.5
+orbit_spread = 2.0
+angular_speed = 0.13
+size = 0.35
+inclination_deg = 5.0
+color = Color(0.82, 0.82, 0.86, 1)
+max_instances = 500
