@@ -47,6 +47,8 @@ func _init() -> void:
 	_test_non_dictionary_section_skipped()
 	_test_no_file_is_clean_start()
 	_test_invalid_provider_rejected()
+	_test_post_load_runs_after_all_sections()
+	_test_post_load_not_called_on_clean_start()
 	_cleanup()
 	print("SaveService testleri: %d kontrol, %d basarisiz" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -203,6 +205,52 @@ func _test_invalid_provider_rejected() -> void:
 	_eq(int((state2.received as Dictionary)["ok"]), 1, "gecerli provider yazildi")
 	s.free()
 	reader.free()
+
+
+func _test_post_load_runs_after_all_sections() -> void:
+	_cleanup()
+	var writer := _make(Provider.new({"a": 1}), Provider.new({"b": 2}))
+	writer.save_game()
+
+	var order := []
+	var state := OrderedProvider.new("state", order)
+	var upgrades := OrderedProvider.new("upgrades", order)
+	var late := OrderedProvider.new("late", order)
+	var reader := _make(state, upgrades)
+	reader.register_section(&"late", late) # kayitta yok ama post_load yine de cagrilir
+	reader.load_game()
+	_eq(order, ["deserialize:state", "deserialize:upgrades", "post_load:state", "post_load:upgrades", "post_load:late"],
+		"post_load, tum deserialize'lardan sonra calisir")
+	writer.free()
+	reader.free()
+
+
+func _test_post_load_not_called_on_clean_start() -> void:
+	_cleanup()
+	var order := []
+	var s := _make(OrderedProvider.new("state", order), OrderedProvider.new("upgrades", order))
+	s.load_game()
+	_eq(order.size(), 0, "temiz baslangicta post_load cagrilmaz")
+	s.free()
+
+
+## deserialize ve post_load siralarini kaydeden provider.
+class OrderedProvider extends RefCounted:
+	var _name: String
+	var _log: Array
+
+	func _init(p_name: String, p_log: Array) -> void:
+		_name = p_name
+		_log = p_log
+
+	func serialize() -> Dictionary:
+		return {}
+
+	func deserialize(_data: Dictionary) -> void:
+		_log.append("deserialize:" + _name)
+
+	func post_load() -> void:
+		_log.append("post_load:" + _name)
 
 
 func _write_raw(path: String, text: String) -> void:

@@ -8,6 +8,7 @@ extends Node
 ## - Yeni kayit parcasi = register_section() ile bir satir (Open/Closed).
 ## - Ust duzey alanlar (ornegin B4'un "saved_at"i) "version" ile "sections" yaninda durabilir.
 ## - Surum degisirse _migrations sozlugune (eski surum -> Callable) adim eklenir.
+## - Parcanin post_load() metodu varsa, TUM parcalar geri yuklendikten ve Economy.refresh() cagrildiktan sonra calisir.
 ##
 ## Guvenlik:
 ## - Atomik yazma: once .tmp'ye yazilir, sonra adlandirilir. Kayit sirasinda surec olurse eski kayit bozulmaz.
@@ -18,6 +19,7 @@ extends Node
 ## BigNumber nesneleri kayit sirasinda to_dict() ile yazilir, okurken BigNumber.from_dict() ile geri kurulur.
 
 const SAVE_PATH := "user://save.json"
+const ECONOMY_PATH := "/root/Economy"
 const FORMAT_VERSION := 1
 const AUTOSAVE_INTERVAL := 30.0
 
@@ -94,6 +96,7 @@ func load_game() -> bool:
 				_quarantine_corrupt()
 			continue
 		_distribute(envelope)
+		_after_load()
 		return true
 	return false
 
@@ -211,6 +214,21 @@ func _distribute(envelope: Dictionary) -> void:
 		var payload: Variant = sections.get(String(key))
 		if payload is Dictionary:
 			(_sections[key] as Object).call("deserialize", payload)
+
+
+## Tum parcalar geri yuklendikten SONRA calisir:
+## 1) Economy gelir onbellegini dusurur (A3: "SaveService yuklemeden sonra refresh() cagirmali").
+##    UpgradeSystem.deserialize carpanlari sinyalsiz degistirdigi icin bu sart.
+## 2) post_load() metodu olan parcalar cagrilir (ornegin offline kazanc, guncel gelirle hesaplanmali).
+func _after_load() -> void:
+	if is_inside_tree():
+		var economy := get_node_or_null(ECONOMY_PATH)
+		if economy != null and economy.has_method("refresh"):
+			economy.call("refresh")
+	for key: StringName in _sections:
+		var provider := _sections[key] as Object
+		if provider.has_method("post_load"):
+			provider.call("post_load")
 
 
 ## Bozuk ana kaydi silmeden kenara alir, sonraki otomatik kayit onu ezmesin.
