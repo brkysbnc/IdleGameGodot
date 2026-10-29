@@ -20,8 +20,8 @@ func _ready() -> void:
 			var a := float(i) / SEGMENTS * TAU
 			var b := float(i + 1) / SEGMENTS * TAU
 			var points: Array[Vector3] = [
-				_point(a, radius - 0.07, tilt), _point(b, radius - 0.07, tilt), _point(b, radius + 0.07, tilt),
-				_point(a, radius - 0.07, tilt), _point(b, radius + 0.07, tilt), _point(a, radius + 0.07, tilt)]
+				_point(a, radius - 0.1, tilt), _point(b, radius - 0.1, tilt), _point(b, radius + 0.1, tilt),
+				_point(a, radius - 0.1, tilt), _point(b, radius + 0.1, tilt), _point(a, radius + 0.1, tilt)]
 			for point in points:
 				surface.add_vertex(point)
 	mesh = surface.commit()
